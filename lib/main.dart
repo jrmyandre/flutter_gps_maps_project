@@ -1,10 +1,12 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_google_map_testing/popup_alert.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'directions_model.dart';
 import 'directions_reposiroty.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'latest_data.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +47,8 @@ class _MapScreenState extends State<MapScreen> {
   );
   final dbRef = FirebaseDatabase.instance.ref().child("locations");
   List<Map<dynamic,dynamic>> dataList = [];
+  Map<dynamic,dynamic> _latestData = {};
+
 
   late GoogleMapController _googleMapController;
   final Set<Marker> _markers = {};
@@ -63,6 +67,24 @@ class _MapScreenState extends State<MapScreen> {
         dataList.add(values);
       });
       _updateMarker();
+    });
+
+    dbRef.onChildAdded.listen((event) {
+      Map<dynamic,dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
+      _latestData = data;
+
+      if (_latestData['manual'] == true){
+        LatestData latestData = LatestData(
+          latitude: double.parse(_latestData['latitude']),
+          longitude: double.parse(_latestData['longitude']),
+          timestamp: DateTime.parse(_latestData['timestamp']),
+          isManual: _latestData['manual'],
+        );
+        Navigator.push(
+          context, 
+          MaterialPageRoute(builder: (context) => PopupAlert(latestData: latestData,))
+        );
+      }
     });
   }
 
@@ -105,6 +127,20 @@ class _MapScreenState extends State<MapScreen> {
         }
     }
   }
+
+  // void _popupalert (){
+  //   LatestData latestData = LatestData(
+  //     latitude: int.parse(_latestData['latitude']),
+  //     longitude: int.parse(_latestData['longitude']),
+  //     timestamp: DateTime.parse(_latestData['timestamp']),
+  //     isManual: _latestData['manual'],
+  //   );
+  //   Navigator.push(
+  //     context, 
+  //     MaterialPageRoute(builder: (context) => PopupAlert())
+  //   );
+
+  // }
   
 
   @override
@@ -200,7 +236,7 @@ class _MapScreenState extends State<MapScreen> {
 
 
         floatingActionButton: Padding(
-          padding: const EdgeInsets.only(right: 50.0, bottom: 10),
+          padding: const EdgeInsets.only(right: 50.0, bottom: 50),
           child: FloatingActionButton(
             
             backgroundColor: Colors.white,
