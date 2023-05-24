@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_google_map_testing/main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'latest_data.dart';
 
@@ -15,15 +16,26 @@ class PopupAlert extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('New Ping!'),
+        // leading: IconButton(
+        //   icon: Icon(Icons.close),
+        //   //onpressed go to MainApp()
+        //   onPressed: () => Navigator.of(context).push(
+        //     MaterialPageRoute(
+        //       builder: (context) => MainApp(),
+        //     ),
+        //   ),
+
+        // )
+        
       ),
-      body: Stack(
+      body: Column(
         
         children: [
           SizedBox(
           //make height 60% of screen
-            height: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.6,
           //make width maximum screen size
-            width: double.infinity,
+            width: MediaQuery.of(context).size.width,
             child: 
             GoogleMap(
               initialCameraPosition: CameraPosition(
@@ -38,34 +50,18 @@ class PopupAlert extends StatelessWidget {
               },
             ),
           ),
-          GridView(
-            padding: const EdgeInsets.all(25),
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200,
-              childAspectRatio: 3 / 2,
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20,
-             ),
-             children: [
-              InkWell(
-                borderRadius: BorderRadius.circular(15),
-                child: Container(
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Colors.blue,
-                        Colors.blueAccent,
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: const Text('Direction'),
-                ),
-              )
-             ],
+          ListTile(
+            leading: Icon(Icons.location_on),
+            title: Text('Latitude: ${latestData.latitude}'),
+        
+            
+          ),
+          ListTile(
+            leading: Icon(Icons.location_on),
+            title: Text('Longitude: ${latestData.longitude}'),
+        
+            
+          
           )
           
           

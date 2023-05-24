@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_map_testing/popup_alert.dart';
@@ -7,6 +9,7 @@ import 'directions_reposiroty.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'latest_data.dart';
+
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +50,7 @@ class _MapScreenState extends State<MapScreen> {
   );
   final dbRef = FirebaseDatabase.instance.ref().child("locations");
   List<Map<dynamic,dynamic>> dataList = [];
-  Map<dynamic,dynamic> _latestData = {};
+  List<Map<dynamic,dynamic>> tempDataList = [];
 
 
   late GoogleMapController _googleMapController;
@@ -57,40 +60,54 @@ class _MapScreenState extends State<MapScreen> {
   int totalDistance = 0;
   List<int> totalDuration = [0, 0];
 
+
+
   @override
   void initState(){
     super.initState();
+    
+
 
     dbRef.onValue.listen((event) {
+      dataList.clear();
       Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
       data.forEach((key, values) {
         dataList.add(values);
       });
       _updateMarker();
-    });
 
-    dbRef.onChildAdded.listen((event) {
-      Map<dynamic,dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
-      _latestData = data;
-
-      if (_latestData['manual'] == true){
-        LatestData latestData = LatestData(
-          latitude: double.parse(_latestData['latitude']),
-          longitude: double.parse(_latestData['longitude']),
-          timestamp: DateTime.parse(_latestData['timestamp']),
-          isManual: _latestData['manual'],
-        );
-        Navigator.push(
-          context, 
-          MaterialPageRoute(builder: (context) => PopupAlert(latestData: latestData,))
-        );
-      }
     });
+    dbRef.orderByChild('timestamp').limitToLast(1).onChildAdded.listen((event) {
+        if (event.snapshot.value != null){
+          Map<dynamic,dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
+          bool isManual = data['manual'];
+          if(isManual){
+            LatestData latestData = LatestData(
+              latitude: double.parse(data['latitude']),
+              longitude: double.parse(data['longitude']),
+              timestamp: DateTime.parse(data['timestamp']),
+              isManual: data['manual'],
+            );
+            dbRef.child(event.snapshot.key!).child('manual').set(false).then((_){
+              Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => PopupAlert(latestData: latestData,)),
+              );
+            }
+             );
+          }
+        }
+      });
   }
 
   void _updateMarker ()async{
     _markers.clear();
+    _polylines.clear();
 
+
+
+    dataList.sort((a, b) => a['timestamp'].compareTo(b['timestamp']));
+  
     for(var i=0;i<dataList.length; i++){
       double lat = double.parse(dataList[i]['latitude']);
       double lng = double.parse(dataList[i]['longitude']);
@@ -101,15 +118,14 @@ class _MapScreenState extends State<MapScreen> {
         infoWindow: InfoWindow(title: 'Marker $i'),
         icon: BitmapDescriptor.defaultMarker,
       );
-     
-      _markers.add(marker);
 
+      _markers.add(marker);  
     }
 
     for(var i=0; i<_markers.length; i++){
       final directions = await DirectionsRepository().getDirections(origin: _markers.elementAt(i).position, destination: _markers.elementAt(i+1).position);
       if (directions != null){
-          setState(() {
+        setState(() {
             _info = directions;
             _polylines.add(Polyline(polylineId: PolylineId("Polyline $i"),
               color: Colors.blue,
@@ -119,12 +135,11 @@ class _MapScreenState extends State<MapScreen> {
               
               ));
             totalDistance += _info!.distance;
-            
             totalDuration[1] += (_info!.duration/60).toInt();
             totalDuration[0] += totalDuration[1]~/60;
             totalDuration[1] = totalDuration[1]%60;
           });
-        }
+      }
     }
   }
 
