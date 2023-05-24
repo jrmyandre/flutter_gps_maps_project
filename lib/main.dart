@@ -142,20 +142,6 @@ class _MapScreenState extends State<MapScreen> {
       }
     }
   }
-
-  // void _popupalert (){
-  //   LatestData latestData = LatestData(
-  //     latitude: int.parse(_latestData['latitude']),
-  //     longitude: int.parse(_latestData['longitude']),
-  //     timestamp: DateTime.parse(_latestData['timestamp']),
-  //     isManual: _latestData['manual'],
-  //   );
-  //   Navigator.push(
-  //     context, 
-  //     MaterialPageRoute(builder: (context) => PopupAlert())
-  //   );
-
-  // }
   
 
   @override
@@ -181,17 +167,7 @@ class _MapScreenState extends State<MapScreen> {
             onMapCreated: (controller) => _googleMapController = controller,
             markers: _markers,
             polylines: Set<Polyline>.of(_polylines),
-            // {
-            //   if(_info != null)
-            //   Polyline(polylineId: const PolylineId("Polyline"),
-            //   color: Colors.blue,
-            //   width: 5,
-            //   points: _info!.polylinePoints
-            //     .map((e) => LatLng(e.latitude, e.longitude)).toList(),
-              
-            //   )
-            // },
-            // onLongPress: _addMarker,
+
             ),
             if (_info != null)
             Positioned(
@@ -267,54 +243,4 @@ class _MapScreenState extends State<MapScreen> {
         );
   }
 
-  // void _addMarker(LatLng pos)async{
-  //   if ((_markers.length >= 6 || _markers.isEmpty)){
-  //     setState(() {
-  //       _markers.clear();
-  //       _polylines.clear();
-  //       totalDistance = 0;
-  //       totalDuration = [0, 0];
-  //       _markers.add(Marker(markerId: MarkerId(pos.toString()),
-  //       position: pos,
-  //       infoWindow: InfoWindow(title: pos.toString()),
-  //       icon: BitmapDescriptor.defaultMarker));
-  //       _info = null;
-  //     });
-  //   }
-  //   else {
-  //     setState(() {
-  //       _markers.add(Marker(markerId: MarkerId(pos.toString()),
-  //       position: pos,
-  //       infoWindow: InfoWindow(title: pos.toString()),
-  //       icon: BitmapDescriptor.defaultMarker));
-       
-  //     });
-
-  //     //final directions = await DirectionsRepository().getDirections(origin: _markers.first.position, destination: pos);
-  //     for (var i = 0; i< _markers.length; i++){
-  //       final directions = await DirectionsRepository().getDirections(origin: _markers.elementAt(i).position, destination: _markers.elementAt(i+1).position);
-  //       if (directions != null){
-  //         setState(() {
-  //           _info = directions;
-  //           _polylines.add(Polyline(polylineId: PolylineId("Polyline $i"),
-  //             color: Colors.blue,
-  //             width: 5,
-  //             points: _info!.polylinePoints
-  //               .map((e) => LatLng(e.latitude, e.longitude)).toList(),
-              
-  //             ));
-  //           totalDistance += _info!.distance;
-            
-  //           totalDuration[1] += (_info!.duration/60).toInt();
-  //           totalDuration[0] += totalDuration[1]~/60;
-  //           totalDuration[1] = totalDuration[1]%60;
-  //         });
-  //       }
-  //     }
-  //     // setState(() {
-  //     //   _info = directions;
-  //     // });
-
-  //   }
-  // }
 }
