@@ -1,12 +1,17 @@
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_google_map_testing/popup_alert.dart';
+// import 'package:flutter_google_map_testing/popup_alert.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'directions_model.dart';
 import 'directions_reposiroty.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'latest_data.dart';
+// import 'latest_data.dart';
+import 'home.dart';
+// import 'database_services.dart';
+import 'database_provider.dart';
+import 'package:provider/provider.dart';
 
 
 void main() async{
@@ -14,34 +19,45 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform
   );
-  runApp(const MainApp());
+  runApp( 
+    MainApp());
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+   MainApp({super.key});
+
 
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MapScreen()
-    );
+    return ChangeNotifierProvider(
+      create: (context) => DatabaseProvider(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: HomePage(),
+      
+      ),
+      );
+
+    // return  MaterialApp(
+    //   debugShowCheckedModeBanner: false,
+    //   home: HomePage()
+    // );
   }
 }
 
-class MapScreen extends StatefulWidget{
-  const MapScreen({super.key});
+class HistoryPage extends StatefulWidget{
+  const HistoryPage({super.key});
   
   
 
 
   @override
   // ignore: library_private_types_in_public_api
-  _MapScreenState createState() => _MapScreenState();
+  _HistoryPageState createState() => _HistoryPageState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _HistoryPageState extends State<HistoryPage> {
   static const _initialCameraPosition = CameraPosition(
     target: LatLng(-6.200000, 106.816666),
     zoom: 11.5,
@@ -60,10 +76,12 @@ class _MapScreenState extends State<MapScreen> {
 
 
 
+
   @override
   void initState(){
     super.initState();
-    
+    final DatabaseProvider dbProvider = Provider.of<DatabaseProvider>(context);
+    dbProvider.listenSosPing(context);
 
 
     dbRef.onValue.listen((event) {
@@ -75,27 +93,27 @@ class _MapScreenState extends State<MapScreen> {
       _updateMarker();
 
     });
-    dbRef.orderByChild('timestamp').limitToLast(1).onChildAdded.listen((event) {
-        if (event.snapshot.value != null){
-          Map<dynamic,dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
-          bool isManual = data['manual'];
-          if(isManual){
-            LatestData latestData = LatestData(
-              latitude: double.parse(data['latitude']),
-              longitude: double.parse(data['longitude']),
-              timestamp: DateTime.parse(data['timestamp']),
-              isManual: data['manual'],
-            );
-            dbRef.child(event.snapshot.key!).child('manual').set(false).then((_){
-              Navigator.push(
-                context, 
-                MaterialPageRoute(builder: (context) => PopupAlert(latestData: latestData,)),
-              );
-            }
-             );
-          }
-        }
-      });
+    // dbRef.orderByChild('timestamp').limitToLast(1).onChildAdded.listen((event) {
+    //     if (event.snapshot.value != null){
+    //       Map<dynamic,dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
+    //       bool isManual = data['manual'];
+    //       if(isManual){
+    //         LatestData latestData = LatestData(
+    //           latitude: double.parse(data['latitude']),
+    //           longitude: double.parse(data['longitude']),
+    //           timestamp: DateTime.parse(data['timestamp']),
+    //           isManual: data['manual'],
+    //         );
+    //         dbRef.child(event.snapshot.key!).child('manual').set(false).then((_){
+    //           Navigator.push(
+    //             context, 
+    //             MaterialPageRoute(builder: (context) => PopupAlert(latestData: latestData,)),
+    //           );
+    //         }
+    //          );
+    //       }
+    //     }
+    //   });
   }
 
   void _updateMarker ()async{
@@ -153,7 +171,21 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('History'),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) =>  HomePage(),
+            ),
+            (route) => false
+           
+          ),
+        ),
+      ),
       body: Stack(
         alignment: Alignment.center,
         children: [
