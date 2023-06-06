@@ -1,13 +1,13 @@
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_google_map_testing/popup_alert.dart';
+import 'package:flutter_google_map_testing/popup_alert.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'directions_model.dart';
 import 'directions_reposiroty.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
-// import 'latest_data.dart';
+import 'latest_data.dart';
 import 'home.dart';
 // import 'database_services.dart';
 import 'database_provider.dart';
@@ -80,8 +80,7 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void initState(){
     super.initState();
-    final DatabaseProvider dbProvider = Provider.of<DatabaseProvider>(context);
-    dbProvider.listenSosPing(context);
+    
 
 
     dbRef.onValue.listen((event) {
@@ -93,27 +92,27 @@ class _HistoryPageState extends State<HistoryPage> {
       _updateMarker();
 
     });
-    // dbRef.orderByChild('timestamp').limitToLast(1).onChildAdded.listen((event) {
-    //     if (event.snapshot.value != null){
-    //       Map<dynamic,dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
-    //       bool isManual = data['manual'];
-    //       if(isManual){
-    //         LatestData latestData = LatestData(
-    //           latitude: double.parse(data['latitude']),
-    //           longitude: double.parse(data['longitude']),
-    //           timestamp: DateTime.parse(data['timestamp']),
-    //           isManual: data['manual'],
-    //         );
-    //         dbRef.child(event.snapshot.key!).child('manual').set(false).then((_){
-    //           Navigator.push(
-    //             context, 
-    //             MaterialPageRoute(builder: (context) => PopupAlert(latestData: latestData,)),
-    //           );
-    //         }
-    //          );
-    //       }
-    //     }
-    //   });
+    dbRef.orderByChild('timestamp').limitToLast(1).onChildAdded.listen((event) {
+        if (event.snapshot.value != null){
+          Map<dynamic,dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
+          bool isManual = data['manual'];
+          if(isManual){
+            LatestData latestData = LatestData(
+              latitude: double.parse(data['latitude']),
+              longitude: double.parse(data['longitude']),
+              timestamp: DateTime.parse(data['timestamp']),
+              isManual: data['manual'],
+            );
+            dbRef.child(event.snapshot.key!).child('manual').set(false).then((_){
+              Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => PopupAlert(latestData: latestData,)),
+              );
+            }
+             );
+          }
+        }
+      });
   }
 
   void _updateMarker ()async{
