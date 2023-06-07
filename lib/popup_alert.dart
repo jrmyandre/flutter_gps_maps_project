@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_google_map_testing/main.dart';
+import 'package:flutter_google_map_testing/home.dart';
+// import 'package:flutter_google_map_testing/main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'latest_data.dart';
 
@@ -15,6 +16,17 @@ class PopupAlert extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.close),
+          //onpressed go to MainApp()
+          onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+            (route) => false
+          )
+
+        ),
         title: Text('New Ping!'),
         // leading: IconButton(
         //   icon: Icon(Icons.close),

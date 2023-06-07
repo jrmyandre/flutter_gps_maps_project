@@ -10,18 +10,19 @@ class DatabaseProvider extends ChangeNotifier{
     dbProvRef.orderByChild('timestamp').limitToLast(1).onChildAdded.listen((event) {
         if (event.snapshot.value != null){
           Map<dynamic,dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
-          bool isManual = data['manual'];
+          bool isManual = data['manualTemp'];
           if(isManual){
             LatestData latestData = LatestData(
               latitude: double.parse(data['latitude']),
               longitude: double.parse(data['longitude']),
               timestamp: DateTime.parse(data['timestamp']),
-              isManual: data['manual'],
+              isManual: data['manualTemp'],
             );
-            dbProvRef.child(event.snapshot.key!).child('manual').set(false).then((_){
-              Navigator.push(
+            dbProvRef.child(event.snapshot.key!).child('manualTemp').set(false).then((_){
+              Navigator.pushAndRemoveUntil(
                 context, 
                 MaterialPageRoute(builder: (context) => PopupAlert(latestData: latestData,)),
+                (route) => false
               );
             }
              );
