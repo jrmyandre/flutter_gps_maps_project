@@ -100,7 +100,7 @@ class _HistoryPageState extends State<HistoryPage> {
         markerId: MarkerId(i.toString()),
         position: LatLng(lat, lng),
         infoWindow:
-        InfoWindow(title: 'Marker $i'),
+        InfoWindow(title: 'Marker ${i+1}'),
         icon: BitmapDescriptor.defaultMarker,
       );
 

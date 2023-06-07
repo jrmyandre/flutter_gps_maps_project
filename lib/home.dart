@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_google_map_testing/database_provider.dart';
+import 'package:flutter_google_map_testing/latest_ping.dart';
 // import 'package:flutter_google_map_testing/main.dart';
 import 'package:provider/provider.dart';
 import 'history.dart';
@@ -123,9 +124,9 @@ class HomePage extends StatelessWidget {
               color: Color(0xFF0f0b53)
             ),
             ),
-            // onTap: () {
-            //   Navigator.push(context, MaterialPageRoute(builder: (context) => const HistoryPage()));
-            // },
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const LatestPing()));
+            },
           ),
           )
           
