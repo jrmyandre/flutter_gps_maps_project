@@ -99,7 +99,8 @@ class _HistoryPageState extends State<HistoryPage> {
       Marker marker = Marker(
         markerId: MarkerId(i.toString()),
         position: LatLng(lat, lng),
-        infoWindow: InfoWindow(title: 'Marker $i'),
+        infoWindow:
+        InfoWindow(title: 'Marker $i'),
         icon: BitmapDescriptor.defaultMarker,
       );
 
@@ -118,10 +119,6 @@ class _HistoryPageState extends State<HistoryPage> {
                 .map((e) => LatLng(e.latitude, e.longitude)).toList(),
               
               ));
-            totalDistance += _info!.distance;
-            totalDuration[1] += (_info!.duration/60).toInt();
-            totalDuration[0] += totalDuration[1]~/60;
-            totalDuration[1] = totalDuration[1]%60;
           });
       }
     }
@@ -144,21 +141,26 @@ class _HistoryPageState extends State<HistoryPage> {
     
     return Scaffold(
       appBar: AppBar(
+        backgroundColor:const Color(0xFF0f0b53),
         title: const Text('History'),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-              builder: (context) =>  HomePage(),
+              builder: (context) =>  const HomePage(),
             ),
             (route) => false
            
           ),
         ),
       ),
-      body: Stack(
-        alignment: Alignment.center,
+      body: Column(
         children: [
+          Container(
+            height: MediaQuery.of(context).size.height*0.55,
+            
+        alignment: Alignment.center,
+        child: 
           GoogleMap(
             myLocationEnabled: false,
             initialCameraPosition: _initialCameraPosition,
@@ -169,77 +171,73 @@ class _HistoryPageState extends State<HistoryPage> {
             polylines: Set<Polyline>.of(_polylines),
 
             ),
-            // if (_info != null)
-            // Positioned(
-            //   top: 20.0,
-            //   child: Column(
-            //     children:[ 
-            //       Container(
-            //     padding: const EdgeInsets.symmetric(vertical: 6.0,
-            //     horizontal: 12.0),
-            //     decoration: const BoxDecoration(
-            //       color: Colors.white,
-            //       boxShadow: [
-            //         BoxShadow(
-            //           color: Colors.black26,
-            //           offset: Offset(0, -2),
-            //           blurRadius: 6.0,
-            //           spreadRadius: 6.0,
-            //         )
-            //       ]
-            //     ),
-            //       width: MediaQuery.of(context).size.width,
-            //     child: Text(
-            //       'Total: ${totalDistance/1000} km, ${totalDuration[0]} hours ${totalDuration[1]} minutes',
-            //       style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
-            //       textAlign: TextAlign.center,
-            //     ),
-            //               ),
-            //               const SizedBox(height: 10.0),
-            //               Container(
-            //                 padding: const EdgeInsets.symmetric(vertical: 6.0,
-            //     horizontal: 12.0),
-            //     decoration: const BoxDecoration(
-            //       color: Colors.white,
-            //       boxShadow: [
-            //         BoxShadow(
-            //           color: Colors.black26,
-            //           offset: Offset(0, -2),
-            //           blurRadius: 6.0,
-            //           spreadRadius: 6.0,
-            //         )
-            //       ]
-            //     ),
-            //       width: MediaQuery.of(context).size.width,
-            //     child: Text(
-            //       'Last Step: ${_info!.distance/1000} km, ${_info!.duration/60.toInt()~/60} hours ${_info!.duration~/60.toInt()} minutes',
-            //       style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
-            //       textAlign: TextAlign.center,
-            //     ),
-                          
-
-            //               )
-            //               ]
-            //   ),
-            // )
-        ]
+        
       ),
+      Expanded(
+        child: Container(
+        color:const  Color(0xFF0f0b53),
+        
+        child: 
+      ListView.builder(
+        
+        itemCount: dataList.length,
+        itemBuilder: (context, index) =>
+        Card(
+          color: const Color(0xFFff5fff),
+          elevation: 4,
+          child: ListTile(
+          title: Text('Marker ${index+1}',
+          style: const TextStyle(
+            color: Color(0xFF0f0b53),
+            fontWeight: FontWeight.bold,
+          )
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(dataList[index]['timestamp'],
+              style: const TextStyle(
+            color: Color(0xFF0f0b53),
+            fontWeight: FontWeight.bold,
+          )),
+              Text('Lat: ${dataList[index]['latitude']}',
+              style: const TextStyle(
+            color: Color(0xFF0f0b53),
+            fontWeight: FontWeight.bold,
+          )
+          ),
+              Text('Lng: ${dataList[index]['longitude']}',
+              style: const TextStyle(
+            color:  Color(0xFF0f0b53),
+            fontWeight: FontWeight.bold,
+          )),
+            ],
+          )
+      ),
+        )
+         
+      )
+      )
+      ),
+      
+      //   child: ListView.builder(
+      //     itemCount: _markers.length,
+      //     itemBuilder: (context, index) => ListTile(
+      //       title: Text('Marker ${index+1}'),
+      //       // subtitle: Text('Lat: ${_markers.elementAt(index).position.latitude.toStringAsFixed(5)} \nLng: ${_markers.elementAt(index).position.longitude.toStringAsFixed(5)}'),
+      //     ),
+          
+      //    )
+
+      // )
+
+        ],
+      ),
+      
+      
 
 
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.only(right: 50.0, bottom: 50),
-          child: FloatingActionButton(
-            
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black,
-            child: const Icon(Icons.location_on),
-            onPressed: () => _googleMapController.animateCamera(
-              _info != null
-              ? CameraUpdate.newLatLngBounds(_info!.bounds, 100.0)
-              : CameraUpdate.newCameraPosition(_initialCameraPosition),
-              ),
-            ),
-        ),
+        
         );
   }
 

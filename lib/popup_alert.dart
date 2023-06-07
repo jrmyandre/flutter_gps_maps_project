@@ -16,18 +16,19 @@ class PopupAlert extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xFF0f0b53),
         leading: IconButton(
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
           //onpressed go to MainApp()
           onPressed: () => Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-              builder: (context) => HomePage(),
+              builder: (context) => const HomePage(),
             ),
             (route) => false
           )
 
         ),
-        title: Text('New Ping!'),
+        title: const Text('New Ping!'),
         // leading: IconButton(
         //   icon: Icon(Icons.close),
         //   //onpressed go to MainApp()
@@ -45,7 +46,7 @@ class PopupAlert extends StatelessWidget {
         children: [
           SizedBox(
           //make height 60% of screen
-            height: MediaQuery.of(context).size.height * 0.6,
+            height: MediaQuery.of(context).size.height * 0.55,
           //make width maximum screen size
             width: MediaQuery.of(context).size.width,
             child: 
@@ -56,7 +57,7 @@ class PopupAlert extends StatelessWidget {
               ),
               markers: {
                 Marker(
-                  markerId: MarkerId('marker_1'),
+                  markerId: const MarkerId('marker_1'),
                   position: LatLng(latestData.latitude, latestData.longitude),
                 ),
               },
