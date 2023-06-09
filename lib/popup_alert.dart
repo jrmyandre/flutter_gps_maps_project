@@ -28,7 +28,7 @@ class PopupAlert extends StatelessWidget {
           )
 
         ),
-        title: const Text('New Ping!'),
+        title: const Text('New SOS!'),
         // leading: IconButton(
         //   icon: Icon(Icons.close),
         //   //onpressed go to MainApp()
@@ -57,7 +57,7 @@ class PopupAlert extends StatelessWidget {
               ),
               markers: {
                 Marker(
-                  markerId: const MarkerId('marker_1'),
+                  markerId: const MarkerId('New SOS'),
                   position: LatLng(latestData.latitude, latestData.longitude),
                 ),
               },

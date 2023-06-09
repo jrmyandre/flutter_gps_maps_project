@@ -17,28 +17,21 @@ class LatestPing extends StatefulWidget{
 
 class _LatestPingState extends State<LatestPing>{
   final dbRef = FirebaseDatabase.instance.ref().child("locations");
-  List<Map<dynamic,dynamic>> dataList = [];
-  List<Map<dynamic,dynamic>> tempDataList = [];
+  Map<dynamic,dynamic> latestData = {};
+  final Set<Marker> _markers = {};
 
   @override
   void initState(){
     super.initState();
     
 
-dbRef.onValue.listen((event) {
-  dataList.clear();
+dbRef.orderByChild('timestamp').onValue.listen((event) {
   Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
   
-  List<dynamic> sortedData = data.values.toList();
-  sortedData.sort((a, b) {
-    DateTime timestampA = DateTime.parse(a['timestamp']);
-    DateTime timestampB = DateTime.parse(b['timestamp']);
-    return timestampB.compareTo(timestampA);
-  });
   
-  for (dynamic item in sortedData) {
+  for (var item in data.values) {
     if (item['manual'] == true) {
-      dataList.add(item);
+      latestData = item;
       _updateMarker();
       break; // Break out of the loop after finding the most recent "manual" item
     }
@@ -47,8 +40,16 @@ dbRef.onValue.listen((event) {
   }
 
   void _updateMarker(){
+    _markers.clear();
     setState(() {
-      tempDataList = dataList;
+      Marker marker = Marker(
+        markerId: MarkerId("Latest SOS"),
+        position: LatLng(latestData['latitude'], latestData['longitude']),
+        infoWindow:
+        InfoWindow(title: 'Latest SOS'),
+        icon: BitmapDescriptor.defaultMarker,
+      );
+      _markers.add(marker);
     });
   }
 
@@ -72,7 +73,7 @@ dbRef.onValue.listen((event) {
             
             height: MediaQuery.of(context).size.height * 0.55,
             child: GoogleMap(
-              initialCameraPosition: CameraPosition(
+              initialCameraPosition: const CameraPosition(
                 target: LatLng(
                   -6.200000,
                   106.816666,
@@ -81,9 +82,7 @@ dbRef.onValue.listen((event) {
                 zoom: 11.5,
                 
               ),
-              markers: {
-
-              }
+              markers: _markers
             ),
           ),
           
