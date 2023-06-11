@@ -1,24 +1,14 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_google_map_testing/database_provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-// import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-// import 'package:provider/provider.dart';
-// import 'package:dio/dio.dart';
 import 'directions_model.dart';
 import 'directions_reposiroty.dart';
 import 'latest_data.dart';
 import 'popup_alert.dart';
 import 'home.dart';
 
-
 class HistoryPage extends StatefulWidget{
   const HistoryPage({super.key});
-  
-  
-  
-
-
   @override
   // ignore: library_private_types_in_public_api
   _HistoryPageState createState() => _HistoryPageState();
@@ -41,6 +31,8 @@ class _HistoryPageState extends State<HistoryPage> {
   List<Polyline> _polylines = [];
   int totalDistance = 0;
   List<int> totalDuration = [0, 0];
+
+  String _selectedOption = 'All';
 
 
 
@@ -95,14 +87,30 @@ class _HistoryPageState extends State<HistoryPage> {
     for(var i=0;i<dataList.length; i++){
       double lat = double.parse(dataList[i]['latitude']);
       double lng = double.parse(dataList[i]['longitude']);
+      Marker marker;
+ 
 
-      Marker marker = Marker(
+      switch (dataList[i]['manual']) {
+        case true:
+        marker = Marker(
         markerId: MarkerId(i.toString()),
         position: LatLng(lat, lng),
         infoWindow:
         InfoWindow(title: 'Marker ${i+1}'),
-        icon: BitmapDescriptor.defaultMarker,
-      );
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen)
+      );         
+          break;
+        default:
+        marker = Marker(
+        markerId: MarkerId(i.toString()),
+        position: LatLng(lat, lng),
+        infoWindow:
+        InfoWindow(title: 'Marker ${i+1}'),
+        icon: BitmapDescriptor.defaultMarker
+      );     
+      }
+
+
 
       _markers.add(marker);  
     }
@@ -141,6 +149,29 @@ class _HistoryPageState extends State<HistoryPage> {
     
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              setState(() {
+                _selectedOption = value; // Update the selected option
+              });
+            },
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem<String>(
+                value: 'Option 1',
+                child: Text('Option 1'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'Option 2',
+                child: Text('Option 2'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'Option 3',
+                child: Text('Option 3'),
+              ),
+            ],
+          ),
+        ],
         backgroundColor:const Color(0xFF0f0b53),
         title: const Text('History'),
         leading: IconButton(
@@ -179,44 +210,52 @@ class _HistoryPageState extends State<HistoryPage> {
         
         child: 
       ListView.builder(
-        
-        itemCount: dataList.length,
-        itemBuilder: (context, index) =>
-        Card(
-          color: const Color(0xFFff5fff),
-          elevation: 4,
-          child: ListTile(
-          title: Text('Marker ${index+1}',
+  itemCount: dataList.length,
+  itemBuilder: (context, index) {
+    bool isManual = dataList[index]['manual'] == true;
+
+    return Card(
+      color: isManual ? const Color(0xFF00ffc4) : const Color(0xFFff5fff),
+      elevation: 4,
+      child: ListTile(
+        title: Text(
+          'Marker ${index + 1}',
           style: const TextStyle(
             color: Color(0xFF0f0b53),
             fontWeight: FontWeight.bold,
-          )
           ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(dataList[index]['timestamp'],
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              dataList[index]['timestamp'],
               style: const TextStyle(
-            color: Color(0xFF0f0b53),
-            fontWeight: FontWeight.bold,
-          )),
-              Text('Lat: ${dataList[index]['latitude']}',
+                color: Color(0xFF0f0b53),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              'Lat: ${dataList[index]['latitude']}',
               style: const TextStyle(
-            color: Color(0xFF0f0b53),
-            fontWeight: FontWeight.bold,
-          )
-          ),
-              Text('Lng: ${dataList[index]['longitude']}',
+                color: Color(0xFF0f0b53),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              'Lng: ${dataList[index]['longitude']}',
               style: const TextStyle(
-            color:  Color(0xFF0f0b53),
-            fontWeight: FontWeight.bold,
-          )),
-            ],
-          )
+                color: Color(0xFF0f0b53),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
       ),
-        )
-         
-      )
+    );
+  },
+)
+
       )
       ),
       

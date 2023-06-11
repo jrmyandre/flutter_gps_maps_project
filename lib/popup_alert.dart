@@ -59,6 +59,7 @@ class PopupAlert extends StatelessWidget {
                 Marker(
                   markerId: const MarkerId('New SOS'),
                   position: LatLng(latestData.latitude, latestData.longitude),
+                  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
                 ),
               },
             ),

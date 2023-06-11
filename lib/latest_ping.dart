@@ -18,61 +18,52 @@ class LatestPing extends StatefulWidget{
 class _LatestPingState extends State<LatestPing>{
   final dbRef = FirebaseDatabase.instance.ref().child("locations");
   Map<dynamic,dynamic> latestData = {};
-  final Set<Marker> _markers = {};
+  List<Map<dynamic,dynamic>> dataList = [];
+  late GoogleMapController _googleMapController;
 
   @override
   void initState(){
     super.initState();
     
 
-dbRef.orderByChild('timestamp').onValue.listen((event) {
-  Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
-  
-  
-  for (var item in data.values) {
-    if (item['manual'] == true) {
-      latestData = item;
-      _updateMarker();
-      break; // Break out of the loop after finding the most recent "manual" item
+  dbRef.orderByChild('timestamp').onValue.listen((event) {
+    Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
+    for (var item in data.values) {
+      if (item['manual'] == true) {
+        setState(() {
+          latestData = item;
+        });
+        // latestData = item;
+        break;
+      }
     }
-  }
+
   });
   }
 
-  void _updateMarker(){
-    _markers.clear();
-    setState(() {
-      Marker marker = Marker(
-        markerId: MarkerId("Latest SOS"),
-        position: LatLng(latestData['latitude'], latestData['longitude']),
-        infoWindow:
-        InfoWindow(title: 'Latest SOS'),
-        icon: BitmapDescriptor.defaultMarker,
-      );
-      _markers.add(marker);
-    });
-  }
 
   @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        
         leading: 
         IconButton(
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
           onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
           },
         ),
-        backgroundColor: Color(0xFF0f0b53),
-        title: Text("Latest Ping"),
+        backgroundColor: const Color(0xFF0f0b53),
+        title: const Text("Latest Ping"),
       ),
       body: Column(
         children: [
           Container(
             
             height: MediaQuery.of(context).size.height * 0.55,
-            child: GoogleMap(
+            child: 
+            GoogleMap(
               initialCameraPosition: const CameraPosition(
                 target: LatLng(
                   -6.200000,
@@ -82,7 +73,17 @@ dbRef.orderByChild('timestamp').onValue.listen((event) {
                 zoom: 11.5,
                 
               ),
-              markers: _markers
+              onMapCreated: (controller) => _googleMapController = controller,
+              markers: {
+                Marker(
+                  markerId: const MarkerId("Latest SOS"),
+                  position: LatLng(double.parse(latestData['latitude']??'0'), double.parse(latestData['longitude']??'0')),
+                  infoWindow:
+                  const InfoWindow(title: 'Latest SOS'),
+                  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+                
+                )
+              }
             ),
           ),
           
