@@ -156,10 +156,17 @@ class _HistoryPageState extends State<HistoryPage> {
                 _selectedOption = value; // Update the selected option
               });
             },
+            color: Color(0xFFff5fff),
             itemBuilder: (BuildContext context) => [
               const PopupMenuItem<String>(
                 value: 'Option 1',
-                child: Text('Option 1'),
+                child: Text('Option 1',
+                style: TextStyle(color: Color(0xFF0f0b53),
+                fontWeight: FontWeight.bold,
+                fontSize: 17,
+                fontFamily: 'Poppins'
+                ),
+                ),
               ),
               const PopupMenuItem<String>(
                 value: 'Option 2',
@@ -173,7 +180,16 @@ class _HistoryPageState extends State<HistoryPage> {
           ),
         ],
         backgroundColor:const Color(0xFF0f0b53),
-        title: const Text('History'),
+        title: const Text('History',
+        
+        style: TextStyle(color: Color(0xFFff5fff), 
+        fontFamily: 'Poppins', 
+        fontWeight: FontWeight.bold,
+        fontSize: 20,
+        
+        
+        ),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => Navigator.of(context).pushAndRemoveUntil(
@@ -183,6 +199,7 @@ class _HistoryPageState extends State<HistoryPage> {
             (route) => false
            
           ),
+          color: Color(0xFFff5fff),
         ),
       ),
       body: Column(

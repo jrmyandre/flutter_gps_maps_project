@@ -33,4 +33,15 @@
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCWIWs4tSQy4kHRg6h8WmTvF9RihIUHREo"/>
     </application>
+       <queries>
+            <!-- If your app checks for call support -->
+            <intent>
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="tel" />
+            </intent>
+            <intent>
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="https" />
+            </intent>
+        </queries>
 </manifest>

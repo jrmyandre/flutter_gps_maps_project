@@ -6,6 +6,7 @@ import 'package:flutter_google_map_testing/latest_ping.dart';
 // import 'package:flutter_google_map_testing/main.dart';
 import 'package:provider/provider.dart';
 import 'history.dart';
+import 'devices.dart';
 
 //make HomePage()
 class HomePage extends StatelessWidget {
@@ -168,9 +169,9 @@ class HomePage extends StatelessWidget {
               color: Color(0xFF0f0b53)
             ),
             ),
-            // onTap: () {
-            //   Navigator.push(context, MaterialPageRoute(builder: (context) => const HistoryPage()));
-            // },
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const DevicePage()));
+            },
           ),
           )
           
