@@ -44,43 +44,43 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAf_nQuNekx7sgnhH0G3IykrBnElEgNMaM',
-    appId: '1:59225144141:web:667e554787965744c61504',
-    messagingSenderId: '59225144141',
-    projectId: 'flutter-test-81f25',
-    authDomain: 'flutter-test-81f25.firebaseapp.com',
-    databaseURL: 'https://flutter-test-81f25-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'flutter-test-81f25.appspot.com',
+    apiKey: 'AIzaSyCDFH5QVTeOMUYOAvUJJmGKJpiVY_bU_Pw',
+    appId: '1:836098194394:web:38baee90b9160c36581ee3',
+    messagingSenderId: '836098194394',
+    projectId: 'scoutify-iot',
+    authDomain: 'scoutify-iot.firebaseapp.com',
+    databaseURL: 'https://scoutify-iot-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'scoutify-iot.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBoK9NCBj-AFpvbz6OCTsmiIje9Y5dDRWE',
-    appId: '1:59225144141:android:4cfc222fb0f30580c61504',
-    messagingSenderId: '59225144141',
-    projectId: 'flutter-test-81f25',
-    databaseURL: 'https://flutter-test-81f25-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'flutter-test-81f25.appspot.com',
+    apiKey: 'AIzaSyDlHt2E6aaTFxda9JuQnYqqhEZqUGBlMYg',
+    appId: '1:836098194394:android:62093a66c0e56a69581ee3',
+    messagingSenderId: '836098194394',
+    projectId: 'scoutify-iot',
+    databaseURL: 'https://scoutify-iot-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'scoutify-iot.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyC5XsQr9YnjqjHDDx3lMIasrL-mx-tnHXw',
-    appId: '1:59225144141:ios:d1973d91170bbafec61504',
-    messagingSenderId: '59225144141',
-    projectId: 'flutter-test-81f25',
-    databaseURL: 'https://flutter-test-81f25-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'flutter-test-81f25.appspot.com',
-    iosClientId: '59225144141-0o8g1chi41g06hdkkvgdqo8rt8qkm6lh.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAEgJUBgGUkgFv39v4457d0Bh9SWU_w8Ec',
+    appId: '1:836098194394:ios:aa0f75027d97fc0b581ee3',
+    messagingSenderId: '836098194394',
+    projectId: 'scoutify-iot',
+    databaseURL: 'https://scoutify-iot-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'scoutify-iot.appspot.com',
+    iosClientId: '836098194394-fse41ksqv4duvau0rt208t138p2bkhrg.apps.googleusercontent.com',
     iosBundleId: 'com.example.flutterGoogleMapTesting',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyC5XsQr9YnjqjHDDx3lMIasrL-mx-tnHXw',
-    appId: '1:59225144141:ios:d1973d91170bbafec61504',
-    messagingSenderId: '59225144141',
-    projectId: 'flutter-test-81f25',
-    databaseURL: 'https://flutter-test-81f25-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'flutter-test-81f25.appspot.com',
-    iosClientId: '59225144141-0o8g1chi41g06hdkkvgdqo8rt8qkm6lh.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAEgJUBgGUkgFv39v4457d0Bh9SWU_w8Ec',
+    appId: '1:836098194394:ios:aa0f75027d97fc0b581ee3',
+    messagingSenderId: '836098194394',
+    projectId: 'scoutify-iot',
+    databaseURL: 'https://scoutify-iot-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'scoutify-iot.appspot.com',
+    iosClientId: '836098194394-fse41ksqv4duvau0rt208t138p2bkhrg.apps.googleusercontent.com',
     iosBundleId: 'com.example.flutterGoogleMapTesting',
   );
 }
