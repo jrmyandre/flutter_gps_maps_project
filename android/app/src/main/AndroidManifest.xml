@@ -2,7 +2,7 @@
     package="com.example.flutter_google_map_testing">
    <application
         android:label="flutter_google_map_testing"
-        android:name="${applicationName}"
+        android:name="Scoutify"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
