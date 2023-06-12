@@ -16,6 +16,7 @@ class DatabaseProvider extends ChangeNotifier{
               latitude: double.parse(data['latitude']),
               longitude: double.parse(data['longitude']),
               timestamp: DateTime.parse(data['timestamp']),
+              phoneNumber: data['phone number'].toString(),
               isManual: data['manualTemp'],
             );
             dbProvRef.child(event.snapshot.key!).child('manualTemp').set(false).then((_){

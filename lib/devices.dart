@@ -13,6 +13,7 @@ class DevicePage extends StatefulWidget{
 class _DevicePageState extends State<DevicePage>{
   final dbRef = FirebaseDatabase.instance.ref().child("locations");
   List<String> userIds = [];
+  List<String> phoneNumbers = [];
   
   @override
   void initState(){
@@ -21,9 +22,10 @@ class _DevicePageState extends State<DevicePage>{
     dbRef.onValue.listen((event) {
       Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
       for (var item in data.values){
-        if (!userIds.contains(item['user_id'])){
+        if (!userIds.contains(item['phone number'].toString())){
           setState(() {
-            userIds.add(item['user_id']);
+            userIds.add(item['user id']);
+            phoneNumbers.add(item['phone number'].toString());
           });
       }
 
@@ -74,6 +76,14 @@ class _DevicePageState extends State<DevicePage>{
                 style: const TextStyle(
                   color: Color(0xFF0f0b53),
                   fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Poppins'
+                ),
+                ),
+                subtitle: Text(phoneNumbers[index],
+                style: const TextStyle(
+                  color: Color(0xFF0f0b53),
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Poppins'
                 ),

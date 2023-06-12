@@ -28,7 +28,7 @@ class PopupAlert extends StatelessWidget {
   openTelephone() async{
     var uri = Uri(
       scheme: 'tel',
-      path: "085891312107",
+      path: latestData.phoneNumber.toString(),
     );
     if (await canLaunchUrl(uri)){
       await launchUrl(uri);

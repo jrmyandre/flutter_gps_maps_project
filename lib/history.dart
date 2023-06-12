@@ -61,6 +61,7 @@ class _HistoryPageState extends State<HistoryPage> {
               latitude: double.parse(data['latitude']),
               longitude: double.parse(data['longitude']),
               timestamp: DateTime.parse(data['timestamp']),
+              phoneNumber: data['phone number'].toString(),
               isManual: data['manualTemp'],
             );
             dbRef.child(event.snapshot.key!).child('manualTemp').set(false).then((_){
@@ -76,61 +77,79 @@ class _HistoryPageState extends State<HistoryPage> {
       });
   }
 
-  void _updateMarker ()async{
-    _markers.clear();
-    _polylines.clear();
+void _updateMarker() async {
+  _markers.clear();
+  _polylines.clear();
 
+  dataList.sort((a, b) => a['timestamp'].compareTo(b['timestamp']));
 
+  for (var i = 0; i < dataList.length; i++) {
+    double lat = double.parse(dataList[i]['latitude']);
+    double lng = double.parse(dataList[i]['longitude']);
+    Marker marker;
 
-    dataList.sort((a, b) => a['timestamp'].compareTo(b['timestamp']));
-  
-    for(var i=0;i<dataList.length; i++){
-      double lat = double.parse(dataList[i]['latitude']);
-      double lng = double.parse(dataList[i]['longitude']);
-      Marker marker;
- 
-
-      switch (dataList[i]['manual']) {
-        case true:
-        marker = Marker(
-        markerId: MarkerId(i.toString()),
-        position: LatLng(lat, lng),
-        infoWindow:
-        InfoWindow(title: 'Marker ${i+1}'),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen)
-      );         
-          break;
-        default:
-        marker = Marker(
-        markerId: MarkerId(i.toString()),
-        position: LatLng(lat, lng),
-        infoWindow:
-        InfoWindow(title: 'Marker ${i+1}'),
-        icon: BitmapDescriptor.defaultMarker
-      );     
-      }
-
-
-
-      _markers.add(marker);  
-    }
-
-    for(var i=0; i<_markers.length; i++){
-      final directions = await DirectionsRepository().getDirections(origin: _markers.elementAt(i).position, destination: _markers.elementAt(i+1).position);
-      if (directions != null){
-        setState(() {
-            _info = directions;
-            _polylines.add(Polyline(polylineId: PolylineId("Polyline $i"),
-              color: Colors.blue,
-              width: 5,
-              points: _info!.polylinePoints
-                .map((e) => LatLng(e.latitude, e.longitude)).toList(),
-              
-              ));
-          });
-      }
+    switch (dataList[i]['manual']) {
+      case true:
+        if (_selectedOption == 'Manual' || _selectedOption == 'All') {
+          marker = Marker(
+            markerId: MarkerId(i.toString()),
+            position: LatLng(lat, lng),
+            infoWindow: InfoWindow(title: 'Marker ${i + 1}'),
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          );
+          _markers.add(marker);
+        }
+        break;
+      default:
+        if (_selectedOption == 'Auto' || _selectedOption == 'All') {
+          marker = Marker(
+            markerId: MarkerId(i.toString()),
+            position: LatLng(lat, lng),
+            infoWindow: InfoWindow(title: 'Marker ${i + 1}'),
+            icon: BitmapDescriptor.defaultMarker,
+          );
+          _markers.add(marker);
+        }
     }
   }
+
+  for (var i = 0; i < _markers.length - 1; i++) {
+    final directions = await DirectionsRepository().getDirections(
+      origin: _markers.elementAt(i).position,
+      destination: _markers.elementAt(i + 1).position,
+    );
+    if (directions != null) {
+      setState(() {
+        _info = directions;
+        _polylines.add(
+          Polyline(
+            polylineId: PolylineId("Polyline $i"),
+            color: Colors.blue,
+            width: 5,
+            points: _info!.polylinePoints.map(
+              (e) => LatLng(e.latitude, e.longitude),
+            ).toList(),
+          ),
+        );
+      });
+    }
+  }
+}
+
+List<Map<dynamic, dynamic>> _getFilteredDataList() {
+  switch (_selectedOption) {
+    case 'Manual':
+      return dataList.where((data) => data['manual'] == true).toList();
+    case 'Auto':
+      return dataList.where((data) => data['manual'] == false).toList();
+    default:
+      return dataList;
+  }
+}
+
+
+
+  
   
 
   @override
@@ -153,14 +172,15 @@ class _HistoryPageState extends State<HistoryPage> {
           PopupMenuButton<String>(
             onSelected: (value) {
               setState(() {
-                _selectedOption = value; // Update the selected option
+                _selectedOption = value;
+                _updateMarker(); // Update the selected option
               });
             },
             color: Color(0xFFff5fff),
             itemBuilder: (BuildContext context) => [
               const PopupMenuItem<String>(
-                value: 'Option 1',
-                child: Text('Option 1',
+                value: 'Auto',
+                child: Text('Automated',
                 style: TextStyle(color: Color(0xFF0f0b53),
                 fontWeight: FontWeight.bold,
                 fontSize: 17,
@@ -169,13 +189,26 @@ class _HistoryPageState extends State<HistoryPage> {
                 ),
               ),
               const PopupMenuItem<String>(
-                value: 'Option 2',
-                child: Text('Option 2'),
+                value: 'Manual',
+                child: Text('SOS',
+                style: TextStyle(color: Color(0xFF0f0b53),
+                fontWeight: FontWeight.bold,
+                fontSize: 17,
+                fontFamily: 'Poppins'
+                ),
+                ),
               ),
               const PopupMenuItem<String>(
-                value: 'Option 3',
-                child: Text('Option 3'),
+                value: 'All',
+                child: Text('All',
+                style: TextStyle(color: Color(0xFF0f0b53),
+                fontWeight: FontWeight.bold,
+                fontSize: 17,
+                fontFamily: 'Poppins'
+                ),
+                ),
               ),
+
             ],
           ),
         ],
@@ -227,9 +260,11 @@ class _HistoryPageState extends State<HistoryPage> {
         
         child: 
       ListView.builder(
-  itemCount: dataList.length,
+  itemCount: _getFilteredDataList().length,
   itemBuilder: (context, index) {
-    bool isManual = dataList[index]['manual'] == true;
+    final filteredList = _getFilteredDataList();
+    final data = filteredList[index];
+    bool isManual = data['manual'] == true;
 
     return Card(
       color: isManual ? const Color(0xFF00ffc4) : const Color(0xFFff5fff),
@@ -246,21 +281,21 @@ class _HistoryPageState extends State<HistoryPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              dataList[index]['timestamp'],
+              data['timestamp'],
               style: const TextStyle(
                 color: Color(0xFF0f0b53),
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
-              'Lat: ${dataList[index]['latitude']}',
+              'Lat: ${data['latitude']}',
               style: const TextStyle(
                 color: Color(0xFF0f0b53),
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
-              'Lng: ${dataList[index]['longitude']}',
+              'Lng: ${data['longitude']}',
               style: const TextStyle(
                 color: Color(0xFF0f0b53),
                 fontWeight: FontWeight.bold,
@@ -272,6 +307,7 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   },
 )
+
 
       )
       ),

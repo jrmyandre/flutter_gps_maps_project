@@ -28,8 +28,11 @@ class _LatestPingState extends State<LatestPing>{
     
 
   dbRef.orderByChild('timestamp').onValue.listen((event) {
+    latestData.clear();
     Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
-    for (var item in data.values) {
+    List<dynamic> sortedData = data.values.toList();
+    sortedData.sort((a, b) => -a['timestamp'].compareTo(b['timestamp']));
+    for (var item in sortedData) {
       if (item['manual'] == true) {
         setState(() {
           latestData = item;
@@ -55,9 +58,10 @@ class _LatestPingState extends State<LatestPing>{
   }
 
   openTelephone() async{
+    var phoneNumber = latestData['phone number'];
     var uri = Uri(
       scheme: 'tel',
-      path: "085891312107",
+      path: phoneNumber.toString(),
     );
     if (await canLaunchUrl(uri)){
       await launchUrl(uri);
