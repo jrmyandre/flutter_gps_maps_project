@@ -87,12 +87,13 @@ void _updateMarker() async {
     double lat = double.parse(dataList[i]['latitude']);
     double lng = double.parse(dataList[i]['longitude']);
     Marker marker;
+    int j = i+1;
 
     switch (dataList[i]['manual']) {
       case true:
         if (_selectedOption == 'Manual' || _selectedOption == 'All') {
           marker = Marker(
-            markerId: MarkerId(i.toString()),
+            markerId: MarkerId(j.toString()),
             position: LatLng(lat, lng),
             infoWindow: InfoWindow(title: 'Marker ${i + 1}'),
             icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
@@ -103,7 +104,7 @@ void _updateMarker() async {
       default:
         if (_selectedOption == 'Auto' || _selectedOption == 'All') {
           marker = Marker(
-            markerId: MarkerId(i.toString()),
+            markerId: MarkerId(j.toString()),
             position: LatLng(lat, lng),
             infoWindow: InfoWindow(title: 'Marker ${i + 1}'),
             icon: BitmapDescriptor.defaultMarker,
@@ -271,7 +272,10 @@ List<Map<dynamic, dynamic>> _getFilteredDataList() {
       elevation: 4,
       child: ListTile(
         title: Text(
-          'Marker ${index + 1}',
+          //make the title according to the _marker markerid according to the filtered data
+          'Marker ${_markers.elementAt(index).markerId.value}',
+          
+          
           style: const TextStyle(
             color: Color(0xFF0f0b53),
             fontWeight: FontWeight.bold,
