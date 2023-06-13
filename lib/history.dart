@@ -33,16 +33,13 @@ class _HistoryPageState extends State<HistoryPage> {
   List<int> totalDuration = [0, 0];
 
   String _selectedOption = 'All';
-
-
+  String _selectedOptionTemp = 'All';
 
 
   @override
   void initState(){
     super.initState();
     
-
-
     dbRef.onValue.listen((event) {
       dataList.clear();
       Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
@@ -137,6 +134,8 @@ void _updateMarker() async {
   }
 }
 
+
+
 List<Map<dynamic, dynamic>> _getFilteredDataList() {
   switch (_selectedOption) {
     case 'Manual':
@@ -147,80 +146,107 @@ List<Map<dynamic, dynamic>> _getFilteredDataList() {
       return dataList;
   }
 }
+void _showFilterDialog() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      String selectedValue = _selectedOption;
+      return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return AlertDialog(
+            backgroundColor: Color(0xFF0f0b53),
+            title: Text(
+              'Filter',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Poppins',
+                fontSize: 20.0,
+                color: Color(0xFFff5fff),
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                DropdownButton<String>(
+                  dropdownColor: Color(0xFF0f0b53),
+                  value: selectedValue,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedValue = newValue!;
+                      _selectedOption = newValue;
+                      _updateMarker();
+                    });
+                  },
+                  items: <String>['All', 'Auto', 'Manual']
+                      .map<DropdownMenuItem<String>>(
+                        (String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 15.0,
+                              color: Color(0xFFff5fff),
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
+}
 
 
 
-  
-  
+
+List<String> _getUniquePhoneNumbers() {
+  List<String> phoneNumbers = [];
+
+  for (var data in _getFilteredDataList()) {
+    String phoneNumber = data['phone number'].toString();
+
+    // Check if the phone number is not already in the list
+    if (!phoneNumbers.contains(phoneNumber)) {
+      phoneNumbers.add(phoneNumber);
+    }
+  }
+
+  return phoneNumbers;
+}
+
+
+
 
   @override
   void dispose(){
     _googleMapController.dispose();
     super.dispose();
   }
-
-
-
-
   @override
   Widget build(BuildContext context) {
-    // DatabaseProvider databaseProvider = Provider.of<DatabaseProvider>(context);
-    // databaseProvider.listenSosPing(context);
-    
     return Scaffold(
       appBar: AppBar(
         actions: [
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              setState(() {
-                _selectedOption = value;
-                _updateMarker(); // Update the selected option
-              });
-            },
+          IconButton(
+            onPressed: _showFilterDialog,
+            icon: Icon(Icons.filter_list,
             color: Color(0xFFff5fff),
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem<String>(
-                value: 'Auto',
-                child: Text('Automated',
-                style: TextStyle(color: Color(0xFF0f0b53),
-                fontWeight: FontWeight.bold,
-                fontSize: 17,
-                fontFamily: 'Poppins'
-                ),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                value: 'Manual',
-                child: Text('SOS',
-                style: TextStyle(color: Color(0xFF0f0b53),
-                fontWeight: FontWeight.bold,
-                fontSize: 17,
-                fontFamily: 'Poppins'
-                ),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                value: 'All',
-                child: Text('All',
-                style: TextStyle(color: Color(0xFF0f0b53),
-                fontWeight: FontWeight.bold,
-                fontSize: 17,
-                fontFamily: 'Poppins'
-                ),
-                ),
-              ),
-
-            ],
+            
+            ),
           ),
         ],
         backgroundColor:const Color(0xFF0f0b53),
         title: const Text('History',
-        
         style: TextStyle(color: Color(0xFFff5fff), 
         fontFamily: 'Poppins', 
         fontWeight: FontWeight.bold,
         fontSize: 20,
-        
         
         ),
         ),
@@ -270,20 +296,30 @@ List<Map<dynamic, dynamic>> _getFilteredDataList() {
     return Card(
       color: isManual ? const Color(0xFF00ffc4) : const Color(0xFFff5fff),
       elevation: 4,
-      child: ListTile(
-        title: Text(
-          //make the title according to the _marker markerid according to the filtered data
+      child: 
+      InkWell(
+        
+        child: ListTile(
+      
+        
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 3),
+            Text(
           'Marker ${_markers.elementAt(index).markerId.value}',
-          
-          
           style: const TextStyle(
             color: Color(0xFF0f0b53),
             fontWeight: FontWeight.bold,
           ),
         ),
+          ]
+        ),
+        
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 3),
             Text(
               data['timestamp'],
               style: const TextStyle(
@@ -291,6 +327,7 @@ List<Map<dynamic, dynamic>> _getFilteredDataList() {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            SizedBox(height: 3),
             Text(
               'Lat: ${data['latitude']}',
               style: const TextStyle(
@@ -298,6 +335,7 @@ List<Map<dynamic, dynamic>> _getFilteredDataList() {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            SizedBox(height: 3),
             Text(
               'Lng: ${data['longitude']}',
               style: const TextStyle(
@@ -305,35 +343,23 @@ List<Map<dynamic, dynamic>> _getFilteredDataList() {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            SizedBox(height: 3),
+
           ],
         ),
       ),
+      )
+      
     );
   },
 )
-
-
       )
       ),
-      
-      //   child: ListView.builder(
-      //     itemCount: _markers.length,
-      //     itemBuilder: (context, index) => ListTile(
-      //       title: Text('Marker ${index+1}'),
-      //       // subtitle: Text('Lat: ${_markers.elementAt(index).position.latitude.toStringAsFixed(5)} \nLng: ${_markers.elementAt(index).position.longitude.toStringAsFixed(5)}'),
-      //     ),
-          
-      //    )
 
-      // )
 
         ],
       ),
-      
-      
 
-
-        
         );
   }
 
