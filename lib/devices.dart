@@ -38,20 +38,6 @@ class _DevicePageState extends State<DevicePage> {
     });
   }
 
-  //   openTelephone() async{
-  //   var phoneNumber = latestData['phone number'];
-  //   var uri = Uri(
-  //     scheme: 'tel',
-  //     path: phoneNumber.toString(),
-  //   );
-  //   if (await canLaunchUrl(uri)){
-  //     await launchUrl(uri);
-  //   }
-  //   else{
-  //     throw 'Could not launch $uri';
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +73,20 @@ class _DevicePageState extends State<DevicePage> {
               elevation: 4,
               color: Color(0xFFff5fff),
               child: ListTile(
-                leading: Icon(Icons.person),
+                onTap: () async {
+                  var uri = Uri(
+                    scheme: 'tel',
+                    path: phoneNumbers[index],
+                  );
+                  if (await canLaunchUrl(uri)) {
+                    launchUrl(uri);
+                  } else {
+                    throw 'Could not launch $uri';
+                  }
+                },
+                leading: Icon(Icons.person,
+                size: 40,
+                color: Color(0xFF0f0b53),),
                 title: Text(
                   userIds.elementAt(index),
                   style: const TextStyle(
