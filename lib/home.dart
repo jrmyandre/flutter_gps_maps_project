@@ -110,7 +110,7 @@ class HomePage extends StatelessWidget {
               // borderRadius: BorderRadius.circular(10),
               
             child: ListTile(
-              leading: Icon(
+              leading: const Icon(
                 Icons.sos,
                 color: Color(0xFF0f0b53),
                 size: 50,
@@ -153,7 +153,7 @@ class HomePage extends StatelessWidget {
               // borderRadius: BorderRadius.circular(10),
               
             child: ListTile(
-              leading: Icon(
+              leading: const Icon(
                 Icons.devices,
                 color: Color(0xFF0f0b53),
                 size: 50,
@@ -177,13 +177,7 @@ class HomePage extends StatelessWidget {
           
           
           ),
-          
-          // InkWell(
-          //   child: ListTile(
-          //     title: const Text("Latest Ping"),
-
-          //   ),
-          // )
+        
         ],
       )
           )
