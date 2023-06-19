@@ -10,7 +10,6 @@ import 'home.dart';
 class HistoryPage extends StatefulWidget{
   const HistoryPage({super.key});
   @override
-  // ignore: library_private_types_in_public_api
   _HistoryPageState createState() => _HistoryPageState();
 }
 
@@ -34,6 +33,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   String _selectedOption = 'All';
   String _selectedOptionTemp = 'All';
+  String _selectedTime = 'All';
 
 
   @override
@@ -78,22 +78,25 @@ void _updateMarker() async {
   _markers.clear();
   _polylines.clear();
 
-  dataList.sort((a, b) => a['timestamp'].compareTo(b['timestamp']));
+  List<Map<dynamic,dynamic>> filteredDataList = _getFilteredDateTimeDataList();
 
-  for (var i = 0; i < dataList.length; i++) {
-    double lat = double.parse(dataList[i]['latitude']);
+  filteredDataList.sort((a, b) => a['timestamp'].compareTo(b['timestamp']));
+
+  for (var i = 0; i < filteredDataList.length; i++) {
+    // if(dataList[i]['latitude'] != null && dataList[i]['longitude'] != null){
+      double lat = double.parse(dataList[i]['latitude']);
     double lng = double.parse(dataList[i]['longitude']);
     Marker marker;
     int j = i+1;
-
-    switch (dataList[i]['manual']) {
+  
+    switch (filteredDataList[i]['manual']) {
       case true:
         if (_selectedOption == 'Manual' || _selectedOption == 'All') {
           marker = Marker(
             markerId: MarkerId(j.toString()),
             position: LatLng(lat, lng),
             infoWindow: InfoWindow(title: 'Marker ${i + 1}'),
-            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
           );
           _markers.add(marker);
         }
@@ -104,13 +107,12 @@ void _updateMarker() async {
             markerId: MarkerId(j.toString()),
             position: LatLng(lat, lng),
             infoWindow: InfoWindow(title: 'Marker ${i + 1}'),
-            icon: BitmapDescriptor.defaultMarker,
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
           );
           _markers.add(marker);
         }
     }
-  }
-
+  // }
   for (var i = 0; i < _markers.length - 1; i++) {
     final directions = await DirectionsRepository().getDirections(
       origin: _markers.elementAt(i).position,
@@ -132,18 +134,57 @@ void _updateMarker() async {
       });
     }
   }
+    }
+}
+List<Map<dynamic, dynamic>> _getFilteredDateTimeDataList() {
+  switch (_selectedTime) {
+    case 'All':
+      return dataList;
+    case 'Today':
+      DateTime now = DateTime.now();
+      DateTime todayStart = DateTime(now.year, now.month, now.day);
+      DateTime todayEnd = todayStart.add(Duration(days: 1));
+      return dataList
+          .where((data) =>
+              DateTime.parse(data['timestamp']).isAfter(todayStart) &&
+              DateTime.parse(data['timestamp']).isBefore(todayEnd))
+          .toList();
+    case 'Week':
+      DateTime now = DateTime.now();
+      DateTime weekStart = now.subtract(Duration(days: now.weekday));
+      DateTime weekEnd = weekStart.add(Duration(days: 7));
+      return dataList
+          .where((data) =>
+              DateTime.parse(data['timestamp']).isAfter(weekStart) &&
+              DateTime.parse(data['timestamp']).isBefore(weekEnd))
+          .toList();
+    case 'Month':
+      DateTime now = DateTime.now();
+      DateTime monthStart = DateTime(now.year, now.month, 1);
+      DateTime nextMonthStart = DateTime(now.year, now.month + 1, 1);
+      return dataList
+          .where((data) =>
+              DateTime.parse(data['timestamp']).isAfter(monthStart) &&
+              DateTime.parse(data['timestamp']).isBefore(nextMonthStart))
+          .toList();
+    default:
+      return dataList;
+  }
 }
 
 
 
 List<Map<dynamic, dynamic>> _getFilteredDataList() {
+  List<Map<dynamic, dynamic>> filteredList = _getFilteredDateTimeDataList();
   switch (_selectedOption) {
+    case 'All':
+      return filteredList;
     case 'Manual':
-      return dataList.where((data) => data['manual'] == true).toList();
+      return filteredList.where((data) => data['manual'] == true).toList();
     case 'Auto':
-      return dataList.where((data) => data['manual'] == false).toList();
+      return filteredList.where((data) => data['manual'] == false).toList();
     default:
-      return dataList;
+      return filteredList;
   }
 }
 void _showFilterDialog() {
@@ -154,21 +195,30 @@ void _showFilterDialog() {
       return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           return AlertDialog(
-            backgroundColor: Color(0xFF0f0b53),
-            title: Text(
+            backgroundColor: Color(0xFF000000),
+            title: const Text(
               'Filter',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Poppins',
                 fontSize: 20.0,
-                color: Color(0xFFff5fff),
+                color: Color(0xFF00ffc4),
               ),
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                const Text(
+                  'Type',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Poppins',
+                    fontSize: 15.0,
+                    color: Color(0xFF00ffc4),
+                  ),
+                ),
                 DropdownButton<String>(
-                  dropdownColor: Color(0xFF0f0b53),
+                  dropdownColor: Color(0xFF000000),
                   value: selectedValue,
                   onChanged: (String? newValue) {
                     setState(() {
@@ -183,15 +233,52 @@ void _showFilterDialog() {
                           value: value,
                           child: Text(
                             value,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 15.0,
-                              color: Color(0xFFff5fff),
+                              color: Color(0xFF00ffc4),
                             ),
                           ),
                         ),
                       )
                       .toList(),
+                ),
+                const SizedBox(height: 10.0),
+                const Text(
+                  'Time',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Poppins',
+                    fontSize: 15.0,
+                    color: Color(0xFF00ffc4),
+                  ),
+                ),
+                DropdownButton<String>(
+                  dropdownColor: Color(0xFF000000),
+                  value: _selectedTime,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedTime = newValue!;
+                      _updateMarker();
+                    });
+                  },
+                  items: <String>['All', 'Today', 'Week', 'Month']
+                      .map<DropdownMenuItem<String>>(
+                        (String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 15.0,
+                              color: Color(0xFF00ffc4),
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                
+
                 ),
               ],
             ),
@@ -201,28 +288,6 @@ void _showFilterDialog() {
     },
   );
 }
-
-
-
-
-List<String> _getUniquePhoneNumbers() {
-  List<String> phoneNumbers = [];
-
-  for (var data in _getFilteredDataList()) {
-    String phoneNumber = data['phone number'].toString();
-
-    // Check if the phone number is not already in the list
-    if (!phoneNumbers.contains(phoneNumber)) {
-      phoneNumbers.add(phoneNumber);
-    }
-  }
-
-  return phoneNumbers;
-}
-
-
-
-
   @override
   void dispose(){
     _googleMapController.dispose();
@@ -230,20 +295,21 @@ List<String> _getUniquePhoneNumbers() {
   }
   @override
   Widget build(BuildContext context) {
+    List<Map<dynamic, dynamic>> filteredList = _getFilteredDataList();
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
             onPressed: _showFilterDialog,
             icon: Icon(Icons.filter_list,
-            color: Color(0xFFff5fff),
+            color: Color(0xFF00ffc4),
             
             ),
           ),
         ],
-        backgroundColor:const Color(0xFF0f0b53),
+        backgroundColor:const Color(0xFF000000),
         title: const Text('History',
-        style: TextStyle(color: Color(0xFFff5fff), 
+        style: TextStyle(color: Color(0xFF00ffc4), 
         fontFamily: 'Poppins', 
         fontWeight: FontWeight.bold,
         fontSize: 20,
@@ -259,7 +325,7 @@ List<String> _getUniquePhoneNumbers() {
             (route) => false
            
           ),
-          color: Color(0xFFff5fff),
+          color: Color(0xFF00ffc4),
         ),
       ),
       body: Column(
@@ -283,76 +349,70 @@ List<String> _getUniquePhoneNumbers() {
       ),
       Expanded(
         child: Container(
-        color:const  Color(0xFF0f0b53),
+        color:const  Color(0xFF000000),
         
         child: 
       ListView.builder(
-  itemCount: _getFilteredDataList().length,
+  itemCount: filteredList.length,
   itemBuilder: (context, index) {
-    final filteredList = _getFilteredDataList();
     final data = filteredList[index];
     bool isManual = data['manual'] == true;
+    final markerId = (index + 1).toString();
 
     return Card(
-      color: isManual ? const Color(0xFF00ffc4) : const Color(0xFFff5fff),
+      color: isManual ? const Color(0xFFFF0000) : const Color(0xFF00ffc4),
       elevation: 4,
-      child: 
-      InkWell(
-        
+      child: InkWell(
         child: ListTile(
-      
-        
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 3),
-            Text(
-          'Marker ${_markers.elementAt(index).markerId.value}',
-          style: const TextStyle(
-            color: Color(0xFF0f0b53),
-            fontWeight: FontWeight.bold,
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 3),
+              Text(
+                'Marker $markerId',
+                style: const TextStyle(
+                  color: Color(0xFF000000),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 3),
+              Text(
+                data['timestamp'],
+                style: const TextStyle(
+                  color: Color(0xFF000000),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 3),
+              Text(
+                'Lat: ${data['latitude']}',
+                style: const TextStyle(
+                  color: Color(0xFF000000),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 3),
+              Text(
+                'Lng: ${data['longitude']}',
+                style: const TextStyle(
+                  color: Color(0xFF000000),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 3),
+            ],
           ),
         ),
-          ]
-        ),
-        
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 3),
-            Text(
-              data['timestamp'],
-              style: const TextStyle(
-                color: Color(0xFF0f0b53),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 3),
-            Text(
-              'Lat: ${data['latitude']}',
-              style: const TextStyle(
-                color: Color(0xFF0f0b53),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 3),
-            Text(
-              'Lng: ${data['longitude']}',
-              style: const TextStyle(
-                color: Color(0xFF0f0b53),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 3),
-
-          ],
-        ),
       ),
-      )
-      
     );
   },
 )
+
       )
       ),
 

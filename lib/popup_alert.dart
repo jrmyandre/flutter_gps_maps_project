@@ -42,7 +42,7 @@ class PopupAlert extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF0f0b53),
+        backgroundColor: Color(0xFF000000),
         leading: IconButton(
           icon: const Icon(Icons.close),
           //onpressed go to MainApp()
@@ -52,7 +52,7 @@ class PopupAlert extends StatelessWidget {
             ),
             (route) => false
           ),
-          color: Color(0xFFff5fff),
+          color: Color(0xFF00ffc4),
 
         ),
         title: const Text('New SOS!',
@@ -60,7 +60,7 @@ class PopupAlert extends StatelessWidget {
           fontFamily: 'Poppins',
           fontWeight: FontWeight.bold,
           fontSize: 20,
-          color: Color(0xFFff5fff),
+          color: Color(0xFF00ffc4),
 
         ),
         // leading: IconButton(
@@ -94,20 +94,20 @@ class PopupAlert extends StatelessWidget {
                 Marker(
                   markerId: const MarkerId('New SOS'),
                   position: LatLng(latestData.latitude, latestData.longitude),
-                  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+                  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
                 ),
               },
             ),
           ),
           Expanded(
             child: Container(
-              color:const  Color(0xFF0f0b53),
+              color:const  Color(0xFF000000),
               child: ListView(
                 children: [
                   Card(
                     margin: EdgeInsets.all(10),
                     
-                    color: Color(0xFFff5fff),
+                    color: Color(0xFF00ffc4),
                     elevation: 4,
                     child: InkWell(
                       
@@ -119,7 +119,7 @@ class PopupAlert extends StatelessWidget {
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
-                          color: Color(0xFF0f0b53),
+                          color: Color(0xFF000000),
 
                         ),)
                       )
@@ -128,7 +128,7 @@ class PopupAlert extends StatelessWidget {
                   Card(
                     margin: EdgeInsets.all(10),
                     
-                    color: Color(0xFFff5fff),
+                    color: Color(0xFF00ffc4),
                     elevation: 4,
                     child: InkWell(
                       
@@ -140,7 +140,7 @@ class PopupAlert extends StatelessWidget {
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
-                          color: Color(0xFF0f0b53),
+                          color: Color(0xFF000000),
 
                         ),)
                       )

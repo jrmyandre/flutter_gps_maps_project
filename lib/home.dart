@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
     DatabaseProvider databaseProvider = Provider.of<DatabaseProvider>(context);
     databaseProvider.listenSosPing(context);
     return Scaffold(
-      backgroundColor:const Color(0xFF0f0b53),
+      backgroundColor:const Color(0xFF000000),
       // appBar: AppBar(
       //   title: const Text('Home Page'),
       // ),
@@ -53,10 +53,10 @@ class HomePage extends StatelessWidget {
             padding: const EdgeInsetsDirectional.symmetric(vertical: 20),
             
 
-            // color: Color(0xFFff5fff),
+            // color: Color(0xFF00ffc4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color:const Color(0xFFff5fff)
+              color:const Color(0xFF00ffc4)
             ),
 
 
@@ -68,7 +68,7 @@ class HomePage extends StatelessWidget {
             child: ListTile(
               leading: const Icon(
                 Icons.history,
-                color: Color(0xFF0f0b53),
+                color: Color(0xFF000000),
                 size: 50,
               ),
               
@@ -78,7 +78,7 @@ class HomePage extends StatelessWidget {
               fontFamily: 'Poppins',
               fontWeight: FontWeight.bold,
               fontSize: 35,
-              color: Color(0xFF0f0b53)
+              color: Color(0xFF000000)
             ),
             ),
             onTap: () {
@@ -97,10 +97,10 @@ class HomePage extends StatelessWidget {
             padding: const EdgeInsetsDirectional.symmetric(vertical: 20),
             
 
-            // color: Color(0xFFff5fff),
+            // color: Color(0xFF00ffc4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color:const Color(0xFFff5fff)
+              color:const Color(0xFF00ffc4)
             ),
 
 
@@ -112,7 +112,7 @@ class HomePage extends StatelessWidget {
             child: ListTile(
               leading: const Icon(
                 Icons.sos,
-                color: Color(0xFF0f0b53),
+                color: Color(0xFF000000),
                 size: 50,
               ),
               
@@ -122,7 +122,7 @@ class HomePage extends StatelessWidget {
               fontFamily: 'Poppins',
               fontWeight: FontWeight.bold,
               fontSize: 35,
-              color: Color(0xFF0f0b53)
+              color: Color(0xFF000000)
             ),
             ),
             onTap: () {
@@ -140,10 +140,10 @@ class HomePage extends StatelessWidget {
             padding: const EdgeInsetsDirectional.symmetric(vertical: 20),
             
 
-            // color: Color(0xFFff5fff),
+            // color: Color(0xFF00ffc4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color:const Color(0xFFff5fff)
+              color:const Color(0xFF00ffc4)
             ),
 
 
@@ -155,7 +155,7 @@ class HomePage extends StatelessWidget {
             child: ListTile(
               leading: const Icon(
                 Icons.devices,
-                color: Color(0xFF0f0b53),
+                color: Color(0xFF000000),
                 size: 50,
               
               ),
@@ -166,7 +166,7 @@ class HomePage extends StatelessWidget {
               fontFamily: 'Poppins',
               fontWeight: FontWeight.bold,
               fontSize: 35,
-              color: Color(0xFF0f0b53)
+              color: Color(0xFF000000)
             ),
             ),
             onTap: () {

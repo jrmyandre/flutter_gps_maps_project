@@ -84,13 +84,13 @@ class _LatestPingState extends State<LatestPing>{
           onPressed: (){
             Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
           },
-          color: Color(0xFFff5fff),
+          color: Color(0xFF00ffc4),
         ),
-        backgroundColor: const Color(0xFF0f0b53),
+        backgroundColor: const Color(0xFF000000),
         title: const Text("Latest Ping",
         style: TextStyle(
           fontFamily: 'Poppins',
-          color: Color(0xFFff5fff),
+          color: Color(0xFF00ffc4),
           fontSize: 20,
           fontWeight: FontWeight.bold
         ),
@@ -105,9 +105,9 @@ class _LatestPingState extends State<LatestPing>{
             GoogleMap(
               initialCameraPosition: CameraPosition(
                 target: LatLng(
-                  double.parse(latestData['latitude'])??
+                  double.parse(latestData['latitude']??"-6.2")??
                   -6.200000,
-                  double.parse(latestData['longitude'])??
+                  double.parse(latestData['longitude']??"106.816666")??
                   106.816666,
                 
                 ),
@@ -121,7 +121,7 @@ class _LatestPingState extends State<LatestPing>{
                   position: LatLng(double.parse(latestData['latitude']??'0'), double.parse(latestData['longitude']??'0')),
                   infoWindow:
                   const InfoWindow(title: 'Latest SOS'),
-                  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+                  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
                 
                 )
               }
@@ -129,13 +129,13 @@ class _LatestPingState extends State<LatestPing>{
           ),
           Expanded(
             child: Container(
-              color:const  Color(0xFF0f0b53),
+              color:const  Color(0xFF000000),
               child: ListView(
                 children: [
                   Card(
                     margin: EdgeInsets.all(10),
                     
-                    color: Color(0xFFff5fff),
+                    color: Color(0xFF00ffc4),
                     elevation: 4,
                     child: InkWell(
                       
@@ -147,7 +147,7 @@ class _LatestPingState extends State<LatestPing>{
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
-                          color: Color(0xFF0f0b53),
+                          color: Color(0xFF000000),
 
                         ),)
                       )
@@ -156,7 +156,7 @@ class _LatestPingState extends State<LatestPing>{
                   Card(
                     margin: EdgeInsets.all(10),
                     
-                    color: Color(0xFFff5fff),
+                    color: Color(0xFF00ffc4),
                     elevation: 4,
                     child: InkWell(
                       
@@ -168,7 +168,7 @@ class _LatestPingState extends State<LatestPing>{
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
-                          color: Color(0xFF0f0b53),
+                          color: Color(0xFF000000),
 
                         ),)
                       )

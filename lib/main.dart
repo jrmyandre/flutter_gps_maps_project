@@ -18,7 +18,7 @@ void main() async{
 }
 
 class MainApp extends StatelessWidget {
-   MainApp({super.key});
+   const MainApp({super.key});
 
 
 
@@ -26,7 +26,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => DatabaseProvider(),
-      child: MaterialApp(
+      child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: HomePage(),
       

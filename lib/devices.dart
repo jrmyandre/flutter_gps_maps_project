@@ -45,13 +45,13 @@ class _DevicePageState extends State<DevicePage> {
         title: const Text(
           "Devices",
           style: TextStyle(
-            color: Color(0xFFff5fff),
+            color: Color(0xFF00ffc4),
             fontSize: 20,
             fontWeight: FontWeight.bold,
             fontFamily: 'Poppins',
           ),
         ),
-        backgroundColor: Color(0xFF0f0b53),
+        backgroundColor: Color(0xFF000000),
         leading: IconButton(
           icon: Icon(Icons.close),
           onPressed: () {
@@ -61,17 +61,17 @@ class _DevicePageState extends State<DevicePage> {
               (route) => false,
             );
           },
-          color: Color(0xFFff5fff),
+          color: Color(0xFF00ffc4),
         ),
       ),
       body: Container(
-        color: Color(0xFF0f0b53),
+        color: Color(0xFF000000),
         child: ListView.builder(
           itemCount: userIds.length,
           itemBuilder: (context, index) {
             return Card(
               elevation: 4,
-              color: Color(0xFFff5fff),
+              color: Color(0xFF00ffc4),
               child: ListTile(
                 onTap: () async {
                   var uri = Uri(
@@ -86,11 +86,11 @@ class _DevicePageState extends State<DevicePage> {
                 },
                 leading: Icon(Icons.person,
                 size: 40,
-                color: Color(0xFF0f0b53),),
+                color: Color(0xFF000000),),
                 title: Text(
                   userIds.elementAt(index),
                   style: const TextStyle(
-                    color: Color(0xFF0f0b53),
+                    color: Color(0xFF000000),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Poppins',
@@ -99,7 +99,7 @@ class _DevicePageState extends State<DevicePage> {
                 subtitle: Text(
                   phoneNumbers[index],
                   style: const TextStyle(
-                    color: Color(0xFF0f0b53),
+                    color: Color(0xFF000000),
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Poppins',
