@@ -13,7 +13,7 @@ class Directions {
   });
 
   factory Directions.fromMap(Map<String, dynamic> map){
-    if((map['routes'] as List).isEmpty) return Directions(bounds: LatLngBounds(southwest: LatLng(0, 0), northeast: LatLng(0, 0)), polylinePoints: []);
+    if((map['routes'] as List).isEmpty) return Directions(bounds: LatLngBounds(southwest: const LatLng(0, 0), northeast: const LatLng(0, 0)), polylinePoints: []);
 
     final data = Map<String, dynamic>.from(map['routes'][0]);
 

@@ -52,16 +52,16 @@ class _HistoryPageState extends State<HistoryPage> {
     dbRef.orderByChild('timestamp').limitToLast(1).onChildAdded.listen((event) {
         if (event.snapshot.value != null){
           Map<dynamic,dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
-          bool isManual = data['manualTemp'];
+          bool isManual = data['manual temp'];
           if(isManual){
             LatestData latestData = LatestData(
               latitude: double.parse(data['latitude']),
               longitude: double.parse(data['longitude']),
               timestamp: DateTime.parse(data['timestamp']),
               phoneNumber: data['phone number'].toString(),
-              isManual: data['manualTemp'],
+              isManual: data['manual temp'],
             );
-            dbRef.child(event.snapshot.key!).child('manualTemp').set(false).then((_){
+            dbRef.child(event.snapshot.key!).child('manual temp').set(false).then((_){
               Navigator.pushAndRemoveUntil(
                 context, 
                 MaterialPageRoute(builder: (context) => PopupAlert(latestData: latestData,)),
@@ -143,7 +143,7 @@ List<Map<dynamic, dynamic>> _getFilteredDateTimeDataList() {
     case 'Today':
       DateTime now = DateTime.now();
       DateTime todayStart = DateTime(now.year, now.month, now.day);
-      DateTime todayEnd = todayStart.add(Duration(days: 1));
+      DateTime todayEnd = todayStart.add(const Duration(days: 1));
       return dataList
           .where((data) =>
               DateTime.parse(data['timestamp']).isAfter(todayStart) &&
@@ -152,7 +152,7 @@ List<Map<dynamic, dynamic>> _getFilteredDateTimeDataList() {
     case 'Week':
       DateTime now = DateTime.now();
       DateTime weekStart = now.subtract(Duration(days: now.weekday));
-      DateTime weekEnd = weekStart.add(Duration(days: 7));
+      DateTime weekEnd = weekStart.add(const Duration(days: 7));
       return dataList
           .where((data) =>
               DateTime.parse(data['timestamp']).isAfter(weekStart) &&
@@ -195,7 +195,7 @@ void _showFilterDialog() {
       return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           return AlertDialog(
-            backgroundColor: Color(0xFF000000),
+            backgroundColor:const Color(0xFF000000),
             title: const Text(
               'Filter',
               style: TextStyle(
@@ -218,7 +218,7 @@ void _showFilterDialog() {
                   ),
                 ),
                 DropdownButton<String>(
-                  dropdownColor: Color(0xFF000000),
+                  dropdownColor:const Color(0xFF000000),
                   value: selectedValue,
                   onChanged: (String? newValue) {
                     setState(() {
@@ -254,7 +254,7 @@ void _showFilterDialog() {
                   ),
                 ),
                 DropdownButton<String>(
-                  dropdownColor: Color(0xFF000000),
+                  dropdownColor:const Color(0xFF000000),
                   value: _selectedTime,
                   onChanged: (String? newValue) {
                     setState(() {
@@ -301,7 +301,7 @@ void _showFilterDialog() {
         actions: [
           IconButton(
             onPressed: _showFilterDialog,
-            icon: Icon(Icons.filter_list,
+            icon: const Icon(Icons.filter_list,
             color: Color(0xFF00ffc4),
             
             ),
@@ -325,7 +325,7 @@ void _showFilterDialog() {
             (route) => false
            
           ),
-          color: Color(0xFF00ffc4),
+          color:const Color(0xFF00ffc4),
         ),
       ),
       body: Column(
@@ -367,7 +367,7 @@ void _showFilterDialog() {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 3),
+              const SizedBox(height: 3),
               Text(
                 'Marker $markerId',
                 style: const TextStyle(
@@ -380,7 +380,7 @@ void _showFilterDialog() {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 3),
+              const SizedBox(height: 3),
               Text(
                 data['timestamp'],
                 style: const TextStyle(
@@ -388,7 +388,7 @@ void _showFilterDialog() {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 3),
+              const SizedBox(height: 3),
               Text(
                 'Lat: ${data['latitude']}',
                 style: const TextStyle(
@@ -396,7 +396,7 @@ void _showFilterDialog() {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 3),
+              const SizedBox(height: 3),
               Text(
                 'Lng: ${data['longitude']}',
                 style: const TextStyle(
@@ -404,7 +404,7 @@ void _showFilterDialog() {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 3),
+              const SizedBox(height: 3),
             ],
           ),
         ),

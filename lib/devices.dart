@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'home.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'latest_data.dart';
+import 'popup_alert.dart';
 
 class DevicePage extends StatefulWidget {
   const DevicePage({Key? key}) : super(key: key);
@@ -36,6 +37,30 @@ class _DevicePageState extends State<DevicePage> {
         }
       }
     });
+    dbRef.orderByChild('timestamp').limitToLast(1).onChildAdded.listen((event) {
+        if (event.snapshot.value != null){
+          Map<dynamic,dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
+          bool isManual = data['manual temp'];
+          if(isManual){
+            LatestData latestData = LatestData(
+              latitude: double.parse(data['latitude']),
+              longitude: double.parse(data['longitude']),
+              timestamp: DateTime.parse(data['timestamp']),
+              phoneNumber: data['phone number'].toString(),
+              isManual: data['manual temp'],
+            );
+            dbRef.child(event.snapshot.key!).child('manual temp').set(false).then((_){
+              Navigator.pushAndRemoveUntil(
+                context, 
+                MaterialPageRoute(builder: (context) => PopupAlert(latestData: latestData,)),
+                (route) => false
+              );
+            }
+             );
+          }
+        }
+      });
+    
   }
 
   @override
@@ -51,27 +76,27 @@ class _DevicePageState extends State<DevicePage> {
             fontFamily: 'Poppins',
           ),
         ),
-        backgroundColor: Color(0xFF000000),
+        backgroundColor:const Color(0xFF000000),
         leading: IconButton(
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
           onPressed: () {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => HomePage()),
+              MaterialPageRoute(builder: (context) => const HomePage()),
               (route) => false,
             );
           },
-          color: Color(0xFF00ffc4),
+          color:const Color(0xFF00ffc4),
         ),
       ),
       body: Container(
-        color: Color(0xFF000000),
+        color:const Color(0xFF000000),
         child: ListView.builder(
           itemCount: userIds.length,
           itemBuilder: (context, index) {
             return Card(
               elevation: 4,
-              color: Color(0xFF00ffc4),
+              color:const Color(0xFF00ffc4),
               child: ListTile(
                 onTap: () async {
                   var uri = Uri(
@@ -84,7 +109,7 @@ class _DevicePageState extends State<DevicePage> {
                     throw 'Could not launch $uri';
                   }
                 },
-                leading: Icon(Icons.person,
+                leading:const Icon(Icons.person,
                 size: 40,
                 color: Color(0xFF000000),),
                 title: Text(

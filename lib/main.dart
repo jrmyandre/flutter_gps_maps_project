@@ -1,4 +1,8 @@
-
+// Farrel Zephaniah Lie 2540125390
+// Jeremy Andre Muljono 2540128184
+// Matthew Filbert Tander 2501994241
+// Made for "Scoutify" GPS Tracker app for Semester Final Project, Binus University, Computer Engineering, 2023 Even Semester
+// Mobile App Development for Engineering and Internet of Things course
 
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';

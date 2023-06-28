@@ -84,7 +84,7 @@ class _LatestPingState extends State<LatestPing>{
           onPressed: (){
             Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
           },
-          color: Color(0xFF00ffc4),
+          color: const Color(0xFF00ffc4),
         ),
         backgroundColor: const Color(0xFF000000),
         title: const Text("Latest Ping",
@@ -98,18 +98,14 @@ class _LatestPingState extends State<LatestPing>{
       ),
       body: Column(
         children: [
-          Container(
-            
+          SizedBox(
             height: MediaQuery.of(context).size.height * 0.70,
             child: 
             GoogleMap(
               initialCameraPosition: CameraPosition(
                 target: LatLng(
-                  double.parse(latestData['latitude']??"-6.2")??
-                  -6.200000,
-                  double.parse(latestData['longitude']??"106.816666")??
-                  106.816666,
-                
+                  double.parse(latestData['latitude']??"-6.2"),
+                  double.parse(latestData['longitude']??"106.816666"),
                 ),
                 zoom: 11.5,
                 
@@ -133,16 +129,16 @@ class _LatestPingState extends State<LatestPing>{
               child: ListView(
                 children: [
                   Card(
-                    margin: EdgeInsets.all(10),
+                    margin:const EdgeInsets.all(10),
                     
-                    color: Color(0xFF00ffc4),
+                    color:const Color(0xFF00ffc4),
                     elevation: 4,
                     child: InkWell(
                       
                       onTap: openMaps,
-                      child: ListTile(
+                      child: const ListTile(
                         
-                        title: const Text("Directions",
+                        title:  Text("Directions",
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.bold,
@@ -154,16 +150,16 @@ class _LatestPingState extends State<LatestPing>{
                     ),
                   ),
                   Card(
-                    margin: EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
                     
-                    color: Color(0xFF00ffc4),
+                    color:const Color(0xFF00ffc4),
                     elevation: 4,
                     child: InkWell(
                       
                       onTap: openTelephone,
-                      child: ListTile(
+                      child: const ListTile(
                         
-                        title: const Text("Call",
+                        title:  Text("Call",
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.bold,
